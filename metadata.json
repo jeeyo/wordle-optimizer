@@ -1,0 +1,5 @@
+{
+  "name": "Wordle Optimizer AI",
+  "description": "A smart Wordle companion that helps you solve puzzles by suggesting the best next moves using Gemini AI. Mimics the original game style for a seamless experience.",
+  "requestFramePermissions": []
+}

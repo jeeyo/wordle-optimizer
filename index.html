@@ -1,29 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wordle Optimizer AI</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-      /* Custom animations mimicking Wordle */
-      @keyframes pop {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wordle Optimizer AI</title>
+  <style>
+    /* Custom animations mimicking Wordle */
+    @keyframes pop {
+      0% {
+        transform: scale(1);
       }
-      .animate-pop {
-        animation: pop 0.1s ease-in-out;
+
+      50% {
+        transform: scale(1.1);
       }
-      @keyframes flip {
-        0% { transform: rotateX(0); }
-        50% { transform: rotateX(90deg); }
-        100% { transform: rotateX(0); }
+
+      100% {
+        transform: scale(1);
       }
-      .animate-flip {
-        animation: flip 0.5s ease-in-out;
+    }
+
+    .animate-pop {
+      animation: pop 0.1s ease-in-out;
+    }
+
+    @keyframes flip {
+      0% {
+        transform: rotateX(0);
       }
-    </style>
+
+      50% {
+        transform: rotateX(90deg);
+      }
+
+      100% {
+        transform: rotateX(0);
+      }
+    }
+
+    .animate-flip {
+      animation: flip 0.5s ease-in-out;
+    }
+  </style>
   <script type="importmap">
 {
   "imports": {
@@ -35,8 +54,10 @@
 }
 </script>
 </head>
-  <body class="bg-[#121213] text-white h-screen w-screen overflow-hidden">
-    <div id="root" class="h-full w-full"></div>
-    <script type="module" src="/index.tsx"></script>
-  </body>
+
+<body class="bg-[#121213] text-white h-dvh w-screen overflow-hidden">
+  <div id="root" class="h-full w-full"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+
 </html>

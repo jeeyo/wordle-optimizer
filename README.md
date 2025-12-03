@@ -1,20 +1,88 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Wordle Optimizer AI
 
-# Run and deploy your AI Studio app
+Demo: https://wordle-optimizer.jeeyo.workers.dev/
 
-This contains everything you need to run your app locally.
+**Wordle Optimizer AI** is an intelligent companion app designed to help you solve Wordle puzzles more efficiently. It uses Google's **Gemini 2.5 Flash** model to analyze your current game state and provide statistically optimal word suggestions.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1VoxNB-bYtXe7qRcX3Fp1imfxzYfl_aql
+Unlike simple solvers that just list matching words, this optimizer considers information theory (entropy) to suggest words that will eliminate the most possibilities, even if they aren't the final answer.
 
-## Run Locally
+## ✨ Features
 
-**Prerequisites:**  Node.js
+- **🤖 AI-Powered Analysis**: Uses Google Gemini to analyze board state (Green/Yellow/Gray tiles) and suggest the best next moves.
+- **🧠 Strategic Reasoning**: Provides a brief explanation for *why* a word is suggested (e.g., "Eliminates common vowels," "Tests specific positions").
+- **🎨 Interactive Grid**: Replicates the familiar Wordle interface. Type your guess, then tap tiles to toggle their colors to match your actual game.
+- **📱 Mobile-First Design**: Fully responsive layout that works perfectly on mobile devices, handling virtual keyboards and safe areas correctly.
+- **⚡ Blazing Fast**: Built with Vite and Cloudflare Workers for instant feedback.
 
+## 🛠️ Tech Stack
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+- **Frontend**: React 19, TypeScript, Tailwind CSS v4, Vite
+- **Backend**: Cloudflare Workers (Serverless)
+- **AI**: Google Gemini API (`gemini-2.5-flash`)
+- **State Management**: React Hooks
+
+## 🚀 Getting Started
+
+Follow these steps to run the project locally.
+
+### Prerequisites
+
+- Node.js (v18 or later)
+- npm or yarn
+- A [Google Gemini API Key](https://aistudio.google.com/app/apikey)
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd wordle-optimizer
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Configure Environment Variables**
+   Create a `.env` file in the root directory.
+   
+   ```bash
+   # .env
+   GEMINI_API_KEY=your_api_key_here
+   ```
+
+### Running the App
+
+You need to run both the frontend and the backend worker.
+
+1. **Start the Backend (Cloudflare Worker)**
+   ```bash
+   npm run worker:dev
+   ```
+   This will start the worker on port `8787`.
+
+2. **Start the Frontend**
+   Open a new terminal and run:
+   ```bash
+   npm run dev
+   ```
+   This will start the Vite dev server (usually on port `5173`).
+
+3. **Open the App**
+   Visit `http://localhost:5173` in your browser.
+
+## 🎮 How to Use
+
+1. **Start a Game**: Open the app. You'll see optimal starting words (like SALET or CRANE).
+2. **Enter Your Guess**: Type the word you guessed in your actual Wordle game.
+3. **Set Colors**: Tap the tiles in the app to match the colors you received in Wordle:
+   - Click once for **Yellow** (Present)
+   - Click twice for **Green** (Correct)
+   - Leave as **Gray** (Absent)
+4. **Get Suggestions**: Press **SOLVE** (or Enter). The AI will analyze the constraints and suggest the best next words.
+5. **Repeat**: Continue until you solve the puzzle!
+
+## License
+
+MIT

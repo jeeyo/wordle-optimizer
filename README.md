@@ -8,7 +8,8 @@ Unlike simple solvers that just list matching words, this optimizer considers in
 
 ## 📸 Screenshot
 
-![Wordle Optimizer AI Screenshot](assets/screenshot.png)
+<img src="assets/screenshot.png" alt="Wordle Optimizer" width="250" />
+
 
 
 ## ✨ Features

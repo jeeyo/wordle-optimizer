@@ -6,6 +6,11 @@ Demo: https://wordle-optimizer.jeeyo.workers.dev/
 
 Unlike simple solvers that just list matching words, this optimizer considers information theory (entropy) to suggest words that will eliminate the most possibilities, even if they aren't the final answer.
 
+## 📸 Screenshot
+
+![Wordle Optimizer AI Screenshot](assets/screenshot.png)
+
+
 ## ✨ Features
 
 - **🤖 AI-Powered Analysis**: Uses Google Gemini to analyze board state (Green/Yellow/Gray tiles) and suggest the best next moves.

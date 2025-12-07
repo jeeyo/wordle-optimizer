@@ -64,7 +64,7 @@ You need to run both the frontend and the backend worker.
 
 1. **Start the Backend (Cloudflare Worker)**
    ```bash
-   npm run worker:dev
+   npm run dev:worker
    ```
    This will start the worker on port `8787`.
 

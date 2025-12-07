@@ -30,6 +30,9 @@ const App: React.FC = () => {
   const [suggestionsLoading, setSuggestionsLoading] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
+  // Ref to track and cancel ongoing analysis
+  const abortControllerRef = React.useRef<AbortController | null>(null);
+
   // Key Handler
   const handleChar = useCallback((char: string) => {
     if (phase !== GamePhase.TYPING || history.length >= MAX_CHANCES) return;
@@ -45,6 +48,10 @@ const App: React.FC = () => {
 
   // Submit Feedback & Get AI Suggestions
   const analyzeTurn = useCallback(async () => {
+    // Create a new AbortController for this analysis
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+
     setPhase(GamePhase.THINKING);
     setSuggestionsLoading(true);
 
@@ -56,6 +63,7 @@ const App: React.FC = () => {
       setSuggestions([{ word: "WINNER!", reasoning: "Great job! You solved the puzzle." }]);
       setSuggestionsLoading(false);
       setPhase(GamePhase.GAME_OVER);
+      abortControllerRef.current = null;
       return;
     }
 
@@ -63,20 +71,47 @@ const App: React.FC = () => {
       setSuggestions([{ word: "GAME OVER", reasoning: "Better luck next time." }]);
       setSuggestionsLoading(false);
       setPhase(GamePhase.GAME_OVER);
+      abortControllerRef.current = null;
       return;
     }
 
     try {
-      const newSuggestions = await getSuggestions(history);
+      const newSuggestions = await getSuggestions(history, abortController.signal);
+
+      // Check if this request was aborted
+      if (abortController.signal.aborted) {
+        return;
+      }
+
       setSuggestions(newSuggestions);
-    } catch (e) {
+    } catch (e: any) {
+      // Don't show error if request was aborted
+      if (e.name === 'AbortError') {
+        console.log('Analysis cancelled by user');
+        return;
+      }
+
       console.error(e);
       setSuggestions([{ word: "ERROR", reasoning: "AI Error. Try again." }]);
     } finally {
-      setSuggestionsLoading(false);
-      setPhase(GamePhase.TYPING);
+      // Only update state if not aborted
+      if (!abortController.signal.aborted) {
+        setSuggestionsLoading(false);
+        setPhase(GamePhase.TYPING);
+      }
+      abortControllerRef.current = null;
     }
   }, [history]);
+
+  // Cancel ongoing analysis
+  const cancelAnalysis = useCallback(() => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    setSuggestionsLoading(false);
+    setPhase(GamePhase.TYPING);
+  }, []);
 
   const handleEnter = useCallback(() => {
     if (phase === GamePhase.TYPING) {
@@ -98,19 +133,29 @@ const App: React.FC = () => {
       setPhase(GamePhase.COLORING);
     } else if (phase === GamePhase.COLORING) {
       analyzeTurn();
+    } else if (phase === GamePhase.THINKING) {
+      cancelAnalysis();
     }
-  }, [phase, currentGuess, analyzeTurn]);
+  }, [phase, currentGuess, analyzeTurn, cancelAnalysis]);
+
+  // Handler for ESC key to cancel analysis
+  const handleEscape = useCallback(() => {
+    if (phase === GamePhase.THINKING) {
+      cancelAnalysis();
+    }
+  }, [phase, cancelAnalysis]);
 
   // Keyboard Event Listeners
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Enter') handleEnter();
       else if (e.key === 'Backspace') handleDelete();
+      else if (e.key === 'Escape') handleEscape();
       else if (/^[a-zA-Z]$/.test(e.key)) handleChar(e.key);
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [handleEnter, handleDelete, handleChar]);
+  }, [handleEnter, handleDelete, handleChar, handleEscape]);
 
   // Tile Click Handler (for toggling colors)
   const handleTileClick = (index: number) => {
@@ -264,8 +309,12 @@ const App: React.FC = () => {
           onDelete={handleDelete}
           onEnter={handleEnter}
           usedLetters={getUsedLetters()}
-          enterLabel={phase === GamePhase.COLORING ? "SOLVE" : "ENTER"}
-          isSpecialAction={phase === GamePhase.COLORING}
+          enterLabel={
+            phase === GamePhase.THINKING ? "CANCEL" :
+              phase === GamePhase.COLORING ? "SOLVE" :
+                "ENTER"
+          }
+          isSpecialAction={phase === GamePhase.COLORING || phase === GamePhase.THINKING}
         />
       </div>
 

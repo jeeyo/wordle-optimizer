@@ -1,11 +1,9 @@
 /// <reference types="vite/client" />
 import { Turn, Suggestion } from '../types';
 
-export const getSuggestions = async (history: Turn[]): Promise<Suggestion[]> => {
+export const getSuggestions = async (history: Turn[], signal?: AbortSignal): Promise<Suggestion[]> => {
   try {
-    // In development, point to the default Wrangler port (8787)
-    // In production, the worker serves the assets, so relative path works
-    const apiUrl = import.meta.env.DEV ? 'http://localhost:8787/api/suggestions' : '/api/suggestions';
+    const apiUrl = '/api/suggestions';
 
     const response = await fetch(apiUrl, {
       method: 'POST',
@@ -13,6 +11,7 @@ export const getSuggestions = async (history: Turn[]): Promise<Suggestion[]> => 
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ history }),
+      signal, // Pass the abort signal to fetch
     });
 
     if (!response.ok) {
@@ -23,6 +22,10 @@ export const getSuggestions = async (history: Turn[]): Promise<Suggestion[]> => 
     return suggestions as Suggestion[];
   } catch (error) {
     console.error("Error fetching suggestions:", error);
+    // Re-throw AbortError so it can be handled properly
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw error;
+    }
     return [{ word: "ERROR", reasoning: "Failed to fetch suggestions from backend." }];
   }
 };

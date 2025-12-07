@@ -11,19 +11,19 @@ interface KeyboardProps {
   isSpecialAction?: boolean;
 }
 
-const Keyboard: React.FC<KeyboardProps> = ({ 
-  onChar, 
-  onDelete, 
-  onEnter, 
+const Keyboard: React.FC<KeyboardProps> = ({
+  onChar,
+  onDelete,
+  onEnter,
   usedLetters,
   enterLabel = "ENTER",
   isSpecialAction = false
 }) => {
-  
+
   const getKeyStyle = (key: string) => {
     const state = usedLetters.get(key);
     let base = "h-[58px] rounded font-bold text-sm flex items-center justify-center cursor-pointer transition-colors uppercase select-none ";
-    
+
     if (state === LetterState.CORRECT) return base + "bg-[#538d4e] text-white";
     if (state === LetterState.PRESENT) return base + "bg-[#b59f3b] text-white";
     if (state === LetterState.ABSENT) return base + "bg-[#3a3a3c] text-white";
@@ -35,16 +35,17 @@ const Keyboard: React.FC<KeyboardProps> = ({
       {KEYBOARD_ROWS.map((row, i) => (
         <div key={i} className="flex justify-center mb-2 w-full gap-1.5">
           {i === 2 && (
-             <div 
-              onClick={onEnter} 
-              className={`h-[58px] flex-[1.5] rounded font-bold text-xs flex items-center justify-center cursor-pointer uppercase select-none transition-all duration-200 ${
-                isSpecialAction 
-                ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg" 
-                : "bg-[#818384] text-white hover:bg-[#9e9e9e]"
-              }`}
-             >
-               {enterLabel}
-             </div>
+            <div
+              onClick={onEnter}
+              className={`h-[58px] flex-[1.5] rounded font-bold text-xs flex items-center justify-center cursor-pointer uppercase select-none transition-all duration-200 ${enterLabel === "CANCEL"
+                  ? "bg-red-600 hover:bg-red-700 text-white shadow-lg"
+                  : isSpecialAction
+                    ? "bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg"
+                    : "bg-[#818384] text-white hover:bg-[#9e9e9e]"
+                }`}
+            >
+              {enterLabel}
+            </div>
           )}
 
           {row.map((key) => (

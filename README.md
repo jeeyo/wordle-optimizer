@@ -2,7 +2,7 @@
 
 Demo: https://wordle-optimizer.jeeyo.workers.dev/
 
-**Wordle Optimizer AI** is an intelligent companion app designed to help you solve Wordle puzzles more efficiently. It uses Google's **Gemini 2.5 Flash** model to analyze your current game state and provide statistically optimal word suggestions.
+**Wordle Optimizer AI** is an intelligent companion app designed to help you solve Wordle puzzles more efficiently. It uses OpenAI's **gpt-6-luna** model to analyze your current game state and provide statistically optimal word suggestions.
 
 Unlike simple solvers that just list matching words, this optimizer considers information theory (entropy) to suggest words that will eliminate the most possibilities, even if they aren't the final answer.
 
@@ -14,7 +14,7 @@ Unlike simple solvers that just list matching words, this optimizer considers in
 
 ## ✨ Features
 
-- **🤖 AI-Powered Analysis**: Uses Google Gemini to analyze board state (Green/Yellow/Gray tiles) and suggest the best next moves.
+- **🤖 AI-Powered Analysis**: Uses OpenAI to analyze board state (Green/Yellow/Gray tiles) and suggest the best next moves.
 - **🧠 Strategic Reasoning**: Provides a brief explanation for *why* a word is suggested (e.g., "Eliminates common vowels," "Tests specific positions").
 - **🎨 Interactive Grid**: Replicates the familiar Wordle interface. Type your guess, then tap tiles to toggle their colors to match your actual game.
 - **📱 Mobile-First Design**: Fully responsive layout that works perfectly on mobile devices, handling virtual keyboards and safe areas correctly.
@@ -24,7 +24,7 @@ Unlike simple solvers that just list matching words, this optimizer considers in
 
 - **Frontend**: React 19, TypeScript, Tailwind CSS v4, Vite
 - **Backend**: Cloudflare Workers (Serverless)
-- **AI**: Google Gemini API (`gemini-2.5-flash`)
+- **AI**: OpenAI API (`gpt-6-luna`)
 - **State Management**: React Hooks
 
 ## 🚀 Getting Started
@@ -35,7 +35,7 @@ Follow these steps to run the project locally.
 
 - Node.js (v18 or later)
 - npm or yarn
-- A [Google Gemini API Key](https://aistudio.google.com/app/apikey)
+- A [OpenAI API Key](https://platform.openai.com/api-keys)
 
 ### Installation
 
@@ -55,7 +55,7 @@ Follow these steps to run the project locally.
    
    ```bash
    # .env
-   GEMINI_API_KEY=your_api_key_here
+   OPENAI_API_KEY=your_api_key_here
    ```
 
 ### Running the App

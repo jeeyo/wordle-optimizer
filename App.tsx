@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Turn, TileData, LetterState, GamePhase, Suggestion, WORD_LENGTH, MAX_CHANCES } from './types';
 import Row from './components/Row';
 import Keyboard from './components/Keyboard';
-import { getSuggestions } from './services/geminiService';
+import { getSuggestions } from './services/openaiService';
 
 // Pre-calculated optimal starting strategy
 const INITIAL_SUGGESTIONS: Suggestion[] = [

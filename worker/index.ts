@@ -1,9 +1,9 @@
 /// <reference types="@cloudflare/workers-types" />
-import { GoogleGenAI, Type } from "@google/genai";
+import OpenAI from "openai";
 import { Turn, LetterState } from '../types';
 
 interface Env {
-  GEMINI_API_KEY: string;
+  OPENAI_API_KEY: string;
 }
 
 export default {
@@ -14,14 +14,14 @@ export default {
       try {
         const { history } = await request.json() as { history: Turn[] };
 
-        if (!env.GEMINI_API_KEY) {
+        if (!env.OPENAI_API_KEY) {
           return new Response(JSON.stringify({ error: "API Key not configured" }), {
             status: 500,
             headers: { "Content-Type": "application/json" }
           });
         }
 
-        const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
+        const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY });
 
         // Format history for the prompt
         const historyDescription = history.map((turn, i) => {
@@ -54,32 +54,41 @@ export default {
         Return the response in JSON format.
         `;
 
-        const response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
-          contents: prompt,
-          config: {
-            systemInstruction: systemInstruction,
-            responseMimeType: "application/json",
-            responseSchema: {
-              type: Type.OBJECT,
-              properties: {
-                suggestions: {
-                  type: Type.ARRAY,
-                  items: {
-                    type: Type.OBJECT,
-                    properties: {
-                      word: { type: Type.STRING },
-                      reasoning: { type: Type.STRING }
-                    },
-                    required: ['word', 'reasoning']
+        const completion = await openai.chat.completions.create({
+          model: 'gpt-6-luna',
+          messages: [
+            { role: 'system', content: systemInstruction },
+            { role: 'user', content: prompt }
+          ],
+          response_format: {
+            type: 'json_schema',
+            json_schema: {
+              name: 'wordle_suggestions',
+              strict: true,
+              schema: {
+                type: 'object',
+                properties: {
+                  suggestions: {
+                    type: 'array',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        word: { type: 'string' },
+                        reasoning: { type: 'string' }
+                      },
+                      required: ['word', 'reasoning'],
+                      additionalProperties: false
+                    }
                   }
-                }
+                },
+                required: ['suggestions'],
+                additionalProperties: false
               }
             }
           }
         });
 
-        const text = response.text;
+        const text = completion.choices[0]?.message?.content;
         const data = text ? JSON.parse(text) : { suggestions: [] };
 
         return new Response(JSON.stringify(data.suggestions || []), {
